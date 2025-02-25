@@ -212,25 +212,6 @@ def perturb_sentence(sent, epsilon, model, token_to_vector_dict,sorted_distance_
     # 将句子进行 tokenization（分词）和编码
     print("NEW")
     print(f'orginal_epsilon:{epsilon}')
-    # enc = tiktoken.encoding_for_model(model)
-
-    # json_file_path = '../data/cl100k_base.json'
-    # with open(json_file_path, 'r') as f:
-    #     encoding_data = json.load(f)
-
-    # # 2. 手动构造 Encoding 对象
-    # # 提取信息
-    # pat_str = encoding_data["pat_str"]
-    # mergeable_ranks = {k.encode('latin-1'): v for k, v in encoding_data["mergeable_ranks"].items()}
-    # special_tokens = encoding_data["special_tokens"]
-    # name = encoding_data.get("name", "cl100k_base")  # 设置一个默认名称，如果JSON中没有这个字段
-
-    # # 使用提取的数据构造 Encoding 对象
-    # enc = tiktoken.Encoding(name=name, pat_str=pat_str, mergeable_ranks=mergeable_ranks, special_tokens=special_tokens)
-    # tokens_b = enc.encode(sent)
-
-    # # 将单个 token转换成一种字节序列，然后将其从字节序列解码为 Latin-1 字符集的字符串
-    # tokens=[(enc.decode_single_token_bytes(t)).decode('Latin-1') for t in tokens_b]
 
     tokens = sent.split()
 
@@ -266,37 +247,6 @@ def perturb_sentence(sent, epsilon, model, token_to_vector_dict,sorted_distance_
             replace_dict.append(origin_token)
             continue
         
-        
-        #密度信息影响嵌入向量加噪的eps，对 origin_embed 向量添加拉普拉斯噪声，生成新的噪声嵌入 noise_embed
-        ###################################
-        #作为灵敏度的除子
-        # fx=(normalized_F_x.get(origin_token, None)+1e-6)*2
-        # delta=delta_f_new/fx
-        # noise_embed = add_laplace_noise_to_vector(origin_embed, epsilon,delta)
-        #作为eps的乘子
-        # fx=(normalized_F_x.get(origin_token, None)+1e-6)*2
-        # print(f'fx:{fx}')
-        # print(f'old_epsilon:{epsilon}')
-        # epsilon_new=epsilon*fx
-        # print(f'new_epsilon:{epsilon_new}')
-        # noise_embed = add_laplace_noise_to_vector(origin_embed, epsilon_new,delta_f_new)
-        #在eps上加减
-        # fx=(normalized_F_x.get(origin_token, None)+1e-6)*2-1
-        # epsilon_new=epsilon+fx
-        # print(f'new_epsilon:{epsilon_new}')
-        # noise_embed = add_laplace_noise_to_vector(origin_embed, epsilon_new,delta_f_new)
-        ###################################
-        
-
-        # distance = np.linalg.norm(origin_embed - noise_embed) # 原始向量和噪声向量之间的欧几里得距离 distance
-        # sorted_distances_for_token = sorted_distance_data.get(origin_token, None) # 从 sorted_distance_data 中获取 origin_token 对应的距离信息列表
-        # if sorted_distances_for_token is None:
-        #     continue
-        # distances_only = np.array([item[1] for item in sorted_distances_for_token]) # 提取 sorted_distances_for_token 列表中的距离部分，存储到 NumPy 数组
-        # index = np.searchsorted(distances_only, distance) # 找到 distance 在 distances_only 数组中的插入位置 index，保持数组的升序顺序
-        
-        ###################################
-
         #利用密度信息放缩自适应调整K
         midu=normalized_F_x.get(origin_token, None)
 
@@ -312,11 +262,6 @@ def perturb_sentence(sent, epsilon, model, token_to_vector_dict,sorted_distance_
         # 根据索引 index 反推出距离
         if 0 <= index < len(distances_only):  # 确保索引有效
             distance = distances_only[index]
-
-
-
-
-        ###################################
 
 
         # 获取所有距离比 distance 小的 token及其距离

@@ -16,9 +16,6 @@ def text_generaton_with_black_box_LLMs(prompt,tem):
 # os.environ["http_proxy"] = "http://127.0.0.1:7890"
 # os.environ["https_proxy"] = "http://127.0.0.1:7890"
 
-openai.api_key = "sk-0JSPv6f1rzppFdWC30A9Bd3f12Bd4d4381F398F9D3E45aE3"
-openai.api_base ='https://aihubmix.com/v1'
-
 
 # train_path='output/cnn_daily/perturbed_tokens_baseline_1000.csv'
 train_path='./output/cnn_daily/perturbed_tokens_myway_1000.csv'
